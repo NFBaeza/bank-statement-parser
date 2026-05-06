@@ -1,7 +1,9 @@
-#ifndef BICE_H
-#define BICE_H
+#ifndef PDFPARSER_BICE_H
+#define PDFPARSER_BICE_H
 
 #include "bank.h"
+
+namespace pdfparser {
 
 class BICE : public Bank
 {
@@ -16,4 +18,6 @@ protected:
                                  QList<Transaction> &out) override;
 };
 
-#endif // BICE_H
+} // namespace pdfparser
+
+#endif // PDFPARSER_BICE_H

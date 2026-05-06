@@ -10,6 +10,8 @@
 // #include "banks/wise.h"
 // #include "banks/estado.h"
 
+namespace pdfparser {
+
 std::unique_ptr<Bank> BankFactory::create(BankType type,
                                           const QString &typeAccount)
 {
@@ -79,3 +81,5 @@ BankFactory::BankType BankFactory::fromString(const QString &bankName)
     }
     return BankType::UNKNOWN;
 }
+
+} // namespace pdfparser

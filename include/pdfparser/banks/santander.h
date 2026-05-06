@@ -1,7 +1,9 @@
-#ifndef SANTANDER_H
-#define SANTANDER_H
+#ifndef PDFPARSER_SANTANDER_H
+#define PDFPARSER_SANTANDER_H
 
 #include "bank.h"
+
+namespace pdfparser {
 
 class Santander : public Bank
 {
@@ -16,4 +18,6 @@ protected:
                                  QList<Transaction> &out) override;
 };
 
-#endif // SANTANDER_H
+} // namespace pdfparser
+
+#endif // PDFPARSER_SANTANDER_H

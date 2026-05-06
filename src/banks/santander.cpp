@@ -6,6 +6,8 @@
 #include <QRegularExpression>
 #include <QTime>
 
+namespace pdfparser {
+
 namespace {
 
 // Santander rows always start with "DD/MM ".
@@ -106,3 +108,5 @@ void Santander::readBankMovementsCredit(const QStringList &pagesText,
     qWarning() << "[Santander/credit] parser not implemented yet — drop a "
                   "sample PDF in files/ and we can fill in the regexes.";
 }
+
+} // namespace pdfparser

@@ -1,5 +1,7 @@
 #include "simpleClassifier.h"
 
+namespace pdfparser {
+
 SimpleClassifier::SimpleClassifier()
 {
     initRules();
@@ -143,3 +145,5 @@ void SimpleClassifier::initRules()
     //    matched. Keep this LAST.
     add(QStringLiteral("\\bcompra\\b"), QStringLiteral("purchase"));
 }
+
+} // namespace pdfparser

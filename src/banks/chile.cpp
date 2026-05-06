@@ -5,6 +5,8 @@
 #include <QRegularExpression>
 #include <QTime>
 
+namespace pdfparser {
+
 namespace {
 
 // Chile-specific: rows always start with "DD/MM ".
@@ -227,3 +229,5 @@ void Chile::readBankMovementsCredit(const QStringList &pagesText,
     }
     flush(current);
 }
+
+} // namespace pdfparser

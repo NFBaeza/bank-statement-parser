@@ -1,5 +1,5 @@
-#ifndef BANK_H
-#define BANK_H
+#ifndef PDFPARSER_BANK_H
+#define PDFPARSER_BANK_H
 
 #include <QDateTime>
 #include <QList>
@@ -8,6 +8,8 @@
 #include <QStringList>
 
 #include "simpleClassifier.h"
+
+namespace pdfparser {
 
 class Bank
 {
@@ -83,4 +85,6 @@ protected:
     QList<Transaction> transactions;
 };
 
-#endif // BANK_H
+} // namespace pdfparser
+
+#endif // PDFPARSER_BANK_H

@@ -33,18 +33,18 @@ option(PDFREADER_INSTALL       "Generate install rules for PDFReader"
 # PDF text extraction is delegated to a Python (pdfplumber) sidecar invoked via
 # QProcess — see tools/extract_pdf.py and src/bank.cpp. No PDF library is
 # linked into the C++ side anymore.
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Sql)
+find_package(Qt6 REQUIRED COMPONENTS Core Sql)
 
 qt_standard_project_setup()
 
 # ---- Library ---------------------------------------------------------------
 set(PDFREADER_PUBLIC_HEADERS
-    include/bank.h
-    include/bankFactory.h
-    include/simpleClassifier.h
-    include/banks/bice.h
-    include/banks/chile.h
-    include/banks/santander.h
+    include/pdfparser/bank.h
+    include/pdfparser/bankFactory.h
+    include/pdfparser/simpleClassifier.h
+    include/pdfparser/banks/bice.h
+    include/pdfparser/banks/chile.h
+    include/pdfparser/banks/santander.h
 )
 
 set(PDFREADER_SOURCES
@@ -69,6 +69,8 @@ target_include_directories(PDFReader
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/pdfparser
 )
 
 target_link_libraries(PDFReader

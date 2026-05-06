@@ -1,7 +1,9 @@
-#ifndef CHILE_H
-#define CHILE_H
+#ifndef PDFPARSER_CHILE_H
+#define PDFPARSER_CHILE_H
 
 #include "bank.h"
+
+namespace pdfparser {
 
 class Chile : public Bank
 {
@@ -16,4 +18,6 @@ protected:
                                  QList<Transaction> &out) override;
 };
 
-#endif // CHILE_H
+} // namespace pdfparser
+
+#endif // PDFPARSER_CHILE_H

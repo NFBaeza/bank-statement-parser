@@ -6,6 +6,8 @@
 #include <QRegularExpression>
 #include <QTime>
 
+namespace pdfparser {
+
 namespace {
 
 // BICE rows always start with "<day> <mon> <year> Cargos|Abonos".
@@ -102,3 +104,5 @@ void BICE::readBankMovementsCredit(const QStringList &pagesText,
     qWarning() << "[BICE/credit] parser not implemented yet — drop a sample "
                   "PDF in files/ and we can fill in the regexes.";
 }
+
+} // namespace pdfparser

@@ -1,9 +1,11 @@
-#ifndef SIMPLECLASSIFIER_H
-#define SIMPLECLASSIFIER_H
+#ifndef PDFPARSER_SIMPLECLASSIFIER_H
+#define PDFPARSER_SIMPLECLASSIFIER_H
 
 #include <QString>
 #include <QList>
 #include <QRegularExpression>
+
+namespace pdfparser {
 
 class SimpleClassifier
 {
@@ -23,4 +25,6 @@ private:
     QList<Rule> m_rules;
 };
 
-#endif // SIMPLECLASSIFIER_H
+} // namespace pdfparser
+
+#endif // PDFPARSER_SIMPLECLASSIFIER_H

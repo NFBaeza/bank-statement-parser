@@ -73,6 +73,8 @@ ExtractorCmd resolveExtractor()
 
 } // namespace
 
+namespace pdfparser {
+
 Bank::Bank(const QString &nameBank,
            const QString &typeAccount)
     : nameBank(nameBank)
@@ -334,3 +336,5 @@ double Bank::parseClpAmount(const QString &raw)
     const double v = s.toDouble(&ok);
     return ok ? v : 0.0;
 }
+
+} // namespace pdfparser
