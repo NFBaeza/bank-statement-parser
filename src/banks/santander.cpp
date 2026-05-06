@@ -53,22 +53,6 @@ Santander::Santander(const QString &typeAccount)
 Santander::Santander(const QString &typeAccount, const QString &filePath)
     : Bank(QStringLiteral("Santander"), typeAccount, filePath) {}
 
-double Santander::parseClpAmount(const QString &raw)
-{
-    QString s = raw;
-    s.remove(QRegularExpression(QStringLiteral("[^0-9,.\\-]")));
-
-    if (s.contains(',')) {
-        s.remove('.');
-        s.replace(',', '.');
-    } else {
-        s.remove('.');
-    }
-    bool ok = false;
-    const double v = s.toDouble(&ok);
-    return ok ? v : 0.0;
-}
-
 void Santander::readBankMovementsDebit(const QStringList &pagesText,
                                        QList<Transaction> &out)
 {
@@ -90,14 +74,13 @@ void Santander::readBankMovementsDebit(const QStringList &pagesText,
         Transaction t;
         t.date        = QDateTime(QDate(year, mon, day), QTime(0, 0));
         t.amount      = qAbs(parseClpAmount(m.captured("amount")));
-        t.account     = QStringLiteral("debit");
+        t.account     = nameBank;
         t.category    = classifier.classify(rawDesc);
         t.description = cleanDescription(rawDesc);
         out.append(t);
     };
 
     QString current;
-
     for (const QString &page : pagesText) {
         const QStringList lines = page.split(QChar('\n'), Qt::KeepEmptyParts);
         for (const QString &raw : lines) {
@@ -113,15 +96,6 @@ void Santander::readBankMovementsDebit(const QStringList &pagesText,
         }
     }
     flush(current);
-
-    for (const Transaction &t : out) {
-        qDebug().noquote() << QStringLiteral("  %1  %2  %3  [%4]")
-            .arg(t.date.toString(QStringLiteral("yyyy-MM-dd")))
-            .arg(t.amount, 12, 'f', 0)
-            .arg(t.description.left(60), -60)
-            .arg(t.category);
-    }
-    qDebug() << "[Santander/debit] parsed" << out.size() << "transactions";
 }
 
 void Santander::readBankMovementsCredit(const QStringList &pagesText,
@@ -129,6 +103,6 @@ void Santander::readBankMovementsCredit(const QStringList &pagesText,
 {
     Q_UNUSED(pagesText);
     Q_UNUSED(out);
-    qWarning() << "[Santander/credit] parser not implemented yet — "
-                  "drop a sample PDF in files/ and we can fill in the regexes.";
+    qWarning() << "[Santander/credit] parser not implemented yet — drop a "
+                  "sample PDF in files/ and we can fill in the regexes.";
 }

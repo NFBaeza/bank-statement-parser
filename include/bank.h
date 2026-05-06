@@ -1,17 +1,25 @@
 #ifndef BANK_H
 #define BANK_H
 
+#include <QDateTime>
+#include <QList>
+#include <QRegularExpression>
 #include <QString>
 #include <QStringList>
-#include <QList>
-#include <QDateTime>
-#include <QRegularExpression>
 
 #include "simpleClassifier.h"
 
 class Bank
 {
 public:
+    struct Transaction {
+        QDateTime date;
+        QString   category;
+        QString   account;       
+        double    amount {0.0};
+        QString   description;
+    };
+
     Bank(const QString &nameBank,
          const QString &typeAccount);
 
@@ -25,24 +33,23 @@ public:
     // implementation defined by each derived bank class.
     void readBankMovements(const QString &filePath);
 
+    // Read-only access to the parsed transactions from the most recent
+    // readBankMovements() call.
+    const QList<Transaction> &getTransactions() const { return transactions; }
+
     // Dumps the raw text content of each PDF page to qDebug() — useful while
     // reverse-engineering a new bank's statement layout.
     void printBankFile() const;
     void printBankFile(const QString &filePath) const;
+
+    // Pretty-print parsed transactions to qDebug(). Test-driver convenience.
+    void dumpTransactions() const;
 
     QString nameBank;
     QString typeAccount;
     QString filePath;
 
 protected:
-    struct Transaction {
-        QDateTime date;
-        QString   category;
-        QString   account;
-        double    amount {0.0};
-        QString   description;
-    };
-
     // Each derived bank parses pre-extracted page text into transactions.
     virtual void readBankMovementsCredit(const QStringList &pagesText,
                                          QList<Transaction> &out) = 0;
@@ -51,7 +58,10 @@ protected:
 
     // Helpers shared by every derived bank.
     QStringList extractPdfText(const QString &filePath) const;
-    QDateTime   castQDateTime(const QString &raw) const;
+
+    // Parse a Chilean-format amount: "$ 1.234.567" / "-1.234,50" / "5.000".
+    // Dots are thousands separators; comma is the decimal point.
+    static double parseClpAmount(const QString &raw);
 
     // Spanish 3-letter month abbreviation -> 1..12, or 0 if unknown.
     // ("ene" -> 1, "abr" -> 4, "dic" -> 12).
@@ -69,7 +79,7 @@ protected:
     static QStringList unwrapRows(const QString &pageText,
                                   const QRegularExpression &rowStartRx);
 
-    SimpleClassifier classifier;
+    SimpleClassifier   classifier;
     QList<Transaction> transactions;
 };
 

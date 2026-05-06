@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     qDebug().noquote() << "==== Parsed transactions ====";
     bank->readBankMovements(filePath);
-    qDebug() << bank->nameBank;
+    bank->dumpTransactions();
 
     return 0;
 }

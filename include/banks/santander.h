@@ -14,9 +14,6 @@ protected:
                                  QList<Transaction> &out) override;
     void readBankMovementsDebit (const QStringList &pagesText,
                                  QList<Transaction> &out) override;
-
-private:
-    static double parseClpAmount(const QString &raw);
 };
 
 #endif // SANTANDER_H

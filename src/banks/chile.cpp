@@ -2,7 +2,6 @@
 
 #include <QDate>
 #include <QDateTime>
-#include <QDebug>
 #include <QRegularExpression>
 #include <QTime>
 
@@ -64,22 +63,6 @@ Chile::Chile(const QString &typeAccount)
 Chile::Chile(const QString &typeAccount, const QString &filePath)
     : Bank(QStringLiteral("Banco de Chile"), typeAccount, filePath) {}
 
-double Chile::parseClpAmount(const QString &raw)
-{
-    QString s = raw;
-    s.remove(QRegularExpression(QStringLiteral("[^0-9,.\\-]")));
-
-    if (s.contains(',')) {
-        s.remove('.');
-        s.replace(',', '.');
-    } else {
-        s.remove('.');
-    }
-    bool ok = false;
-    const double v = s.toDouble(&ok);
-    return ok ? v : 0.0;
-}
-
 void Chile::readBankMovementsDebit(const QStringList &pagesText,
                                    QList<Transaction> &out)
 {
@@ -111,7 +94,7 @@ void Chile::readBankMovementsDebit(const QStringList &pagesText,
         Transaction t;
         t.date        = QDateTime(QDate(year, mon, day), QTime(0, 0));
         t.amount      = qAbs(amount);
-        t.account     = QStringLiteral("debit");
+        t.account     = nameBank;
         t.category    = classifier.classify(rawDesc);
         t.description = cleanDescription(rawDesc);
         out.append(t);
@@ -153,15 +136,6 @@ void Chile::readBankMovementsDebit(const QStringList &pagesText,
         }
     }
     flush(current);
-
-    for (const Transaction &t : out) {
-        qDebug().noquote() << QStringLiteral("  %1  %2  %3  [%4]")
-            .arg(t.date.toString(QStringLiteral("yyyy-MM-dd")))
-            .arg(t.amount, 12, 'f', 0)
-            .arg(t.description.left(60), -60)
-            .arg(t.category);
-    }
-    qDebug() << "[Chile/debit] parsed" << out.size() << "transactions";
 }
 
 void Chile::readBankMovementsCredit(const QStringList &pagesText,
@@ -218,7 +192,7 @@ void Chile::readBankMovementsCredit(const QStringList &pagesText,
             Transaction t;
             t.date    = QDateTime(baseDate.addMonths(i), QTime(0, 0));
             t.amount  = qAbs(cuotaAmt);
-            t.account = QStringLiteral("credit");
+            t.account = nameBank;
             t.category = classifier.classify(rawDesc);
             t.description = QStringLiteral("%1 (cuota %2/%3)")
                                 .arg(cleanDescription(rawDesc))
@@ -252,13 +226,4 @@ void Chile::readBankMovementsCredit(const QStringList &pagesText,
         }
     }
     flush(current);
-
-    for (const Transaction &t : out) {
-        qDebug().noquote() << QStringLiteral("  %1  %2  %3  [%4]")
-            .arg(t.date.toString(QStringLiteral("yyyy-MM-dd")))
-            .arg(t.amount, 12, 'f', 0)
-            .arg(t.description.left(60), -60)
-            .arg(t.category);
-    }
-    qDebug() << "[Chile/credit] parsed" << out.size() << "transactions";
 }

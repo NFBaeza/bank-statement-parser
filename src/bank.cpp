@@ -100,10 +100,31 @@ void Bank::readBankMovements(const QString &filePath)
 
     transactions.clear();
 
-    if (typeAccount.trimmed().toLower() == QStringLiteral("debit"))
+    const QString kind = typeAccount.trimmed().toLower();
+    if (kind == QStringLiteral("debit")) {
         readBankMovementsDebit(pages, transactions);
-    else
+    } else if (kind == QStringLiteral("credit")) {
         readBankMovementsCredit(pages, transactions);
+    } else {
+        qWarning().noquote()
+            << "[Bank]" << nameBank
+            << "unknown typeAccount:" << typeAccount
+            << "— expected 'debit' or 'credit'. Defaulting to debit.";
+        readBankMovementsDebit(pages, transactions);
+    }
+}
+
+void Bank::dumpTransactions() const
+{
+    qDebug().noquote() << QStringLiteral("[%1/%2] %3 transactions")
+                              .arg(nameBank, typeAccount).arg(transactions.size());
+    for (const Transaction &t : transactions) {
+        qDebug().noquote() << QStringLiteral("  %1  %2  %3  [%4]")
+            .arg(t.date.toString(QStringLiteral("yyyy-MM-dd")))
+            .arg(t.amount, 12, 'f', 0)
+            .arg(t.description.left(60), -60)
+            .arg(t.category);
+    }
 }
 
 void Bank::printBankFile() const
@@ -297,23 +318,19 @@ QStringList Bank::unwrapRows(const QString &pageText,
     return rows;
 }
 
-QDateTime Bank::castQDateTime(const QString &raw) const
+double Bank::parseClpAmount(const QString &raw)
 {
-    static const QRegularExpression dateRx(
-        QStringLiteral("(\\b\\d{1,2}/\\d{1,2}/\\d{4}\\b)"));
-    static const QRegularExpression timeRx(
-        QStringLiteral("(\\b\\d{1,2}:\\d{2}\\b)"));
+    static const QRegularExpression keepRx(QStringLiteral("[^0-9,.\\-]"));
+    QString s = raw;
+    s.remove(keepRx);
 
-    QDate date;
-    QTime time(0, 0);
-
-    const auto dateMatch = dateRx.match(raw);
-    if (dateMatch.hasMatch())
-        date = QDate::fromString(dateMatch.captured(1), QStringLiteral("d/M/yyyy"));
-
-    const auto timeMatch = timeRx.match(raw);
-    if (timeMatch.hasMatch())
-        time = QTime::fromString(timeMatch.captured(1), QStringLiteral("h:mm"));
-
-    return QDateTime(date, time);
+    if (s.contains(QChar(','))) {
+        s.remove(QChar('.'));        // dots are thousands separators
+        s.replace(QChar(','), QChar('.')); // comma -> decimal point
+    } else {
+        s.remove(QChar('.'));        // CLP integer with thousands separators
+    }
+    bool ok = false;
+    const double v = s.toDouble(&ok);
+    return ok ? v : 0.0;
 }

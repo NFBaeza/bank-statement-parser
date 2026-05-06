@@ -56,12 +56,26 @@ std::unique_ptr<Bank> BankFactory::create(const QString &bankName,
 
 BankFactory::BankType BankFactory::fromString(const QString &bankName)
 {
-    static const QHash<QString, BankType> table = {
-        { QStringLiteral("BICE"),      BankType::BICE      },
-        { QStringLiteral("SANTANDER"), BankType::SANTANDER },
-        { QStringLiteral("WISE"),      BankType::WISE      },
-        { QStringLiteral("ESTADO"),    BankType::ESTADO    },
-        { QStringLiteral("CHILE"),     BankType::CHILE     },
+    // Keyword scan: the parent app may pass arbitrary text such as
+    //   "Banco de Chile - Cuenta Corriente"  or  "Santander Chile, abril".
+    // We match the FIRST keyword that appears in the input, preferring
+    // longer keywords so "Santander Chile" resolves to SANTANDER (the
+    // entity) rather than CHILE.
+    struct Keyword { const char *needle; BankType type; };
+    static const Keyword keywords[] = {
+        // Order: longest first → prevents short keywords from shadowing
+        // longer entity names that contain them.
+        { "santander", BankType::SANTANDER },
+        { "estado",    BankType::ESTADO    },
+        { "chile",     BankType::CHILE     },
+        { "bice",      BankType::BICE      },
+        { "wise",      BankType::WISE      },
     };
-    return table.value(bankName.trimmed().toUpper(), BankType::UNKNOWN);
+
+    const QString hay = bankName.toLower();
+    for (const auto &kw : keywords) {
+        if (hay.contains(QLatin1String(kw.needle)))
+            return kw.type;
+    }
+    return BankType::UNKNOWN;
 }
