@@ -1,0 +1,37 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+out/
+
+# Qt Creator / IDE
+*.user
+*.user.*
+.vscode/
+.idea/
+.qtc_clangd/
+CMakeLists.txt.user*
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Compiled
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+
+# Local statement files (do not commit private data)
+files/
+*.pdf
+
+# Python virtual env for the pdfplumber sidecar — regenerate via
+#   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/
+__pycache__/
+*.pyc
