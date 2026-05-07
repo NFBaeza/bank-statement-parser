@@ -44,6 +44,7 @@ set(PDFREADER_PUBLIC_HEADERS
     include/pdfparser/simpleClassifier.h
     include/pdfparser/banks/bice.h
     include/pdfparser/banks/chile.h
+    include/pdfparser/banks/estado.h
     include/pdfparser/banks/santander.h
 )
 
@@ -53,10 +54,10 @@ set(PDFREADER_SOURCES
     src/simpleClassifier.cpp
     src/banks/bice.cpp
     src/banks/chile.cpp
+    src/banks/estado.cpp
     src/banks/santander.cpp
     # Other banks — uncomment once a concrete class is added:
     #   src/banks/wise.cpp
-    #   src/banks/estado.cpp
 )
 
 add_library(PDFReader STATIC

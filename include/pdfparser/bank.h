@@ -51,15 +51,7 @@ public:
     QString typeAccount;
     QString filePath;
 
-protected:
-    // Each derived bank parses pre-extracted page text into transactions.
-    virtual void readBankMovementsCredit(const QStringList &pagesText,
-                                         QList<Transaction> &out) = 0;
-    virtual void readBankMovementsDebit (const QStringList &pagesText,
-                                         QList<Transaction> &out) = 0;
-
-    // Helpers shared by every derived bank.
-    QStringList extractPdfText(const QString &filePath) const;
+    // ---- Public utilities, usable from non-member parser code -----------
 
     // Parse a Chilean-format amount: "$ 1.234.567" / "-1.234,50" / "5.000".
     // Dots are thousands separators; comma is the decimal point.
@@ -80,6 +72,15 @@ protected:
     // else is appended to the row currently being assembled.
     static QStringList unwrapRows(const QString &pageText,
                                   const QRegularExpression &rowStartRx);
+
+protected:
+    // Each derived bank parses pre-extracted page text into transactions.
+    virtual void readBankMovementsCredit(const QStringList &pagesText,
+                                         QList<Transaction> &out) = 0;
+    virtual void readBankMovementsDebit (const QStringList &pagesText,
+                                         QList<Transaction> &out) = 0;
+
+    QStringList extractPdfText(const QString &filePath) const;
 
     SimpleClassifier   classifier;
     QList<Transaction> transactions;

@@ -38,7 +38,8 @@ void SimpleClassifier::initRules()
         QStringLiteral("investment"));
 
     add(QStringLiteral("\\babono\\b|dep[oó]sito|devoluci[oó]n|reembolso|"
-                       "traspaso\\s+de\\b"),
+                       "traspaso\\s+de\\b|"
+                       "\\btef\\s+de\\b|transf(?:erencia)?\\s+de\\b"),
         QStringLiteral("deposit"));
 
     // 2) Specific merchants — Chilean retail / services. Word boundaries on

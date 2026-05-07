@@ -6,9 +6,9 @@
 
 #include "banks/bice.h"
 #include "banks/chile.h"
+#include "banks/estado.h"
 #include "banks/santander.h"
 // #include "banks/wise.h"
-// #include "banks/estado.h"
 
 namespace pdfparser {
 
@@ -22,12 +22,11 @@ std::unique_ptr<Bank> BankFactory::create(BankType type,
         return std::make_unique<Chile>(typeAccount);
     case BankType::SANTANDER:
         return std::make_unique<Santander>(typeAccount);
+    case BankType::ESTADO:
+        return std::make_unique<Estado>(typeAccount);
     // case BankType::WISE:
     //     return std::make_unique<Wise>(typeAccount);
-    // case BankType::ESTADO:
-    //     return std::make_unique<Estado>(typeAccount);
     case BankType::WISE:
-    case BankType::ESTADO:
     case BankType::UNKNOWN:
     default:
         qDebug() << "Tipo de banco no soportado";
